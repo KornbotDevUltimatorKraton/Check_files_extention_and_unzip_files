@@ -60,7 +60,11 @@ for i in count(0):
                                                                  files_status  = open(path_backup_status_local+"Backup_file_status.json",'w')
                                                                  files_status.write(json.dumps(check_valid_file))  # Send the values 
                                                                  print(check_valid_file)
+                                                                 
+                                                                 print("Writing the URDF file into the uploaded directory to path ",path_uploaded+files.split(".")[0]+"/urdf") 
+                                                                 os.mkdir(path_urdf_gen+files.split(".")[0]+"/urdf",0o777) 
                                                 if len(list_files_inside) != len(check_exten):
+                                                           if len(check_exten) != 0: 
                                                                  check_valid_file[files] = "Has trouble shooting with "+str(len(list_files_inside)-len(check_exten))+" file extention inside"
                                                                  #Write json files for the file status on the system node and check valid file system
                                                                  #File_inserver mode    
@@ -70,7 +74,18 @@ for i in count(0):
                                                                  files_status.write(json.dumps(check_valid_file))  # Send the values 
                                                                  print(check_valid_file," removing file from path "+path_uploaded+files+","+path_uploaded+files.split(".")[0])   
                                                                  os.remove(path_uploaded+files)
-                                                                 shutil.rmtree(path_uploaded+files.split(".")[0], ignore_errors=True)   
+                                                                 shutil.rmtree(path_uploaded+files.split(".")[0], ignore_errors=True) 
+                                                           if len(check_exten) == 0: 
+                                                                 check_valid_file[files] = "Has no file extension match found"
+                                                                 #Write json files for the file status on the system node and check valid file system
+                                                                 #File_inserver mode    
+                                                                 #files_status  = open(path_backup_status_server+"Backup_file_status.json",'w')
+                                                                 #files_status.write(check_valid_file)  # Send the values
+                                                                 files_status  = open(path_backup_status_local+"Backup_file_status.json",'w')
+                                                                 files_status.write(json.dumps(check_valid_file))  # Send the values 
+                                                                 print(check_valid_file," removing file from path "+path_uploaded+files+","+path_uploaded+files.split(".")[0])   
+                                                                 os.remove(path_uploaded+files)
+                                                                 shutil.rmtree(path_uploaded+files.split(".")[0], ignore_errors=True)         
                                                                                                                                      
   except:                                                        
                                           
