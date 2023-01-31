@@ -1,10 +1,13 @@
 import os 
+import json 
 import threading
 import shutil
 import zipfile
 from itertools import count # Count the loop iteration of the data inside the list of directory to unzip and move the directory file 
 user = os.listdir("/home/")[0]
 path_upload_server = "/var/www/"+str(user)+"/static/Robotics_parts/"
+path_backup_status_server = "/var/www/"+str(user)+"/static/Back_up_file_status/"
+path_backup_status_local = "/home/"+str(user)+"/urdf_creator_template/static/Back_up_file_status/"
 path_uploaded ="/home/"+str(user)+"/urdf_creator_template/static/Robotics_parts/" 
 path_urdf_gen = "/home/"+str(user)+"/urdf_creator_template/static/urdf/"
 valid_file = ['zip']
@@ -50,9 +53,25 @@ for i in count(0):
                                                 if len(list_files_inside)  == len(check_exten):
                                                                  shutil.move(path_uploaded+files.split(".")[0],path_urdf_gen)                                                                                     
                                                                  check_valid_file[files] = "Valid_file_extracted"
+                                                                 #Write json files for the file status on the system node and check valid file system
+                                                                 #File_inserver mode    
+                                                                 #files_status  = open(path_backup_status_server+"Backup_file_status.json",'w')
+                                                                 #files_status.write(check_valid_file)  # Send the values
+                                                                 files_status  = open(path_backup_status_local+"Backup_file_status.json",'w')
+                                                                 files_status.write(json.dumps(check_valid_file))  # Send the values 
+                                                                 print(check_valid_file)
                                                 if len(list_files_inside) != len(check_exten):
-                                                                 check_valid_file['files'] = "Has trouble shooting with"+str(len(list_files_inside)-len(check_exten))+"file extention inside"
-                                                                                                                                 
+                                                                 check_valid_file[files] = "Has trouble shooting with "+str(len(list_files_inside)-len(check_exten))+" file extention inside"
+                                                                 #Write json files for the file status on the system node and check valid file system
+                                                                 #File_inserver mode    
+                                                                 #files_status  = open(path_backup_status_server+"Backup_file_status.json",'w')
+                                                                 #files_status.write(check_valid_file)  # Send the values
+                                                                 files_status  = open(path_backup_status_local+"Backup_file_status.json",'w')
+                                                                 files_status.write(json.dumps(check_valid_file))  # Send the values 
+                                                                 print(check_valid_file," removing file from path "+path_uploaded+files+","+path_uploaded+files.split(".")[0])   
+                                                                 os.remove(path_uploaded+files)
+                                                                 shutil.rmtree(path_uploaded+files.split(".")[0], ignore_errors=True)   
+                                                                                                                                     
   except:                                                        
                                           
        print("File is already exist!")                                                            
